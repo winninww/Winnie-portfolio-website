@@ -136,7 +136,7 @@ export function CaseStudyLayout({ project }: CaseStudyLayoutProps) {
                 width={1536}
                 height={864}
                 priority
-                sizes="(min-width: 1024px) 48vw, 100vw"
+                sizes={isActive ? "32vw" : distance === 1 ? "18vw" : "12vw"}
                 className="h-auto max-h-full w-auto max-w-full object-contain"
               />
             </motion.button>

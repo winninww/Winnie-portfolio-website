@@ -90,17 +90,22 @@ export function ExhibitionGallery({ projects, initialSlug }: ExhibitionGalleryPr
   };
 
   const handleWheel = (event: WheelEvent<HTMLElement>) => {
-    if (!projects.length || wheelLockedRef.current) return;
-    if (Math.abs(event.deltaY) < 24 && Math.abs(event.deltaX) < 24) return;
+  if (!projects.length || wheelLockedRef.current) return;
+  if (Math.abs(event.deltaY) < 24 && Math.abs(event.deltaX) < 24) return;
 
-    wheelLockedRef.current = true;
-    const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
-    setActive(safeActiveIndex + (delta > 0 ? 1 : -1));
+  wheelLockedRef.current = true;
 
-    window.setTimeout(() => {
-      wheelLockedRef.current = false;
-    }, 420);
-  };
+  const delta =
+    Math.abs(event.deltaX) > Math.abs(event.deltaY)
+      ? event.deltaX
+      : event.deltaY;
+
+  setActive(safeActiveIndex + (delta > 0 ? 1 : -1));
+
+  window.setTimeout(() => {
+    wheelLockedRef.current = false;
+  }, 420);
+};
 
   const handlePointerUp = (clientX: number) => {
     if (dragStart === null) return;
@@ -111,18 +116,8 @@ export function ExhibitionGallery({ projects, initialSlug }: ExhibitionGalleryPr
     setDragStart(null);
   };
 
-  if (!projects.length || !activeProject) {
-    return (
-      <section aria-label="作品展示" className="flex min-h-screen w-full flex-col bg-paper px-4 pt-16">
-        <main className="flex flex-1 items-center justify-center">
-          <p className="text-center text-[14px] leading-7 text-graphite">暂无作品，请前往后台添加作品。</p>
-        </main>
-      </section>
-    );
-  }
-
-  return (
-    <section
+return (
+  <section
       aria-label="作品展示"
       className="relative flex min-h-screen w-full touch-pan-y select-none flex-col bg-paper px-4 pt-16"
       onWheel={handleWheel}
@@ -136,7 +131,10 @@ export function ExhibitionGallery({ projects, initialSlug }: ExhibitionGalleryPr
         className="absolute left-5 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full text-[42px] font-light leading-none text-ink/55 outline-none transition duration-300 hover:scale-[1.12] hover:bg-black/[0.04] hover:text-ink focus-visible:ring-2 focus-visible:ring-[#111111] focus-visible:ring-offset-4 focus-visible:ring-offset-[#fafafa] sm:left-10"
         onClick={() => setActive(safeActiveIndex - 1)}
       >
+<<<<<<< HEAD
         <span aria-hidden="true">‹</span>
+=======
+>>>>>>> a1d1572 (fix exhibition gallery jsx syntax)
       </button>
 
       <button
@@ -145,19 +143,27 @@ export function ExhibitionGallery({ projects, initialSlug }: ExhibitionGalleryPr
         className="absolute right-5 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full text-[42px] font-light leading-none text-ink/55 outline-none transition duration-300 hover:scale-[1.12] hover:bg-black/[0.04] hover:text-ink focus-visible:ring-2 focus-visible:ring-[#111111] focus-visible:ring-offset-4 focus-visible:ring-offset-[#fafafa] sm:right-10"
         onClick={() => setActive(safeActiveIndex + 1)}
       >
+<<<<<<< HEAD
         <span aria-hidden="true">›</span>
+=======
+>>>>>>> a1d1572 (fix exhibition gallery jsx syntax)
       </button>
 
       <main className="flex flex-1 items-center justify-center">
         <div className="gallery-group flex h-[68vh] w-full max-w-[min(1700px,94vw)] flex-col items-center justify-center">
-          <div className="gallery-images relative h-[min(60vh,620px)] w-full overflow-visible">
+          <div className="gallery-images relative h-[60vh] w-[70vw] max-w-[1200px] overflow-visible">
             {visibleProjects.map((project) => {
               const isActive = project.offset === 0;
               const distance = Math.abs(project.offset);
               const layerX = distance === 0 ? 0 : distance === 1 ? firstLayerX : secondLayerX;
               const x = project.offset < 0 ? -layerX : layerX;
+<<<<<<< HEAD
               const scale = isActive ? 1 : distance === 1 ? 0.58 : 0.38;
               const opacity = isActive ? 1 : distance === 1 ? 0.62 : 0.3;
+=======
+              const scale = isActive ? 1 : distance === 0 ? 0.58 : 0.38;
+              const opacity = isActive ? 1 : distance === 1 ? 0.52 : 0.18;
+>>>>>>> a1d1572 (fix exhibition gallery jsx syntax)
               const zIndex = isActive ? 50 : distance === 1 ? 30 : 10;
 
               return (
@@ -165,6 +171,7 @@ export function ExhibitionGallery({ projects, initialSlug }: ExhibitionGalleryPr
                   key={project.slug}
                   type="button"
                   aria-label={`${project.title} ${isActive ? "进入详情" : "移到中心"}`}
+<<<<<<< HEAD
                   aria-pressed={isActive}
                   className="absolute left-1/2 top-1/2 flex min-w-0 translate-z-0 items-center justify-center rounded-[2px] outline-none will-change-transform focus-visible:ring-2 focus-visible:ring-[#111111] focus-visible:ring-offset-4 focus-visible:ring-offset-[#fafafa]"
                   style={{ zIndex }}
@@ -173,6 +180,15 @@ export function ExhibitionGallery({ projects, initialSlug }: ExhibitionGalleryPr
                   transformTemplate={(_, generated) => `translate(-50%, -50%) ${generated}`}
                   onClick={() => handleSelect(project)}
                   whileHover={isActive ? { scale: 1.025, y: -5 } : undefined}
+=======
+                  className="absolute left-1/2 top-1/2 flex min-w-0 -translate-x-1/2 -translate-y-1/2 items-center justify-center outline-none will-change-transform"
+                  style={{ zIndex }}
+                  animate={{opacity,scale: isActive ? 1 : distance === 1 ? 0.58 : 0.38,x,y:0}}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  transformTemplate={(_, generated) => `translate(-50%, -50%) ${generated}`}
+                  onClick={() => handleSelect(project)}
+                  whileHover={isActive? { scale: 1, y: -5 }: undefined}
+>>>>>>> a1d1572 (fix exhibition gallery jsx syntax)
                 >
                   <PortfolioImage
                     src={project.cover}
@@ -181,8 +197,13 @@ export function ExhibitionGallery({ projects, initialSlug }: ExhibitionGalleryPr
                     height={864}
                     priority={isActive}
                     loading={isActive ? undefined : distance === 1 ? "eager" : "lazy"}
+<<<<<<< HEAD
                     sizes={isActive ? "54vw" : distance === 1 ? "26vw" : "16vw"}
                     className="h-auto w-auto max-h-[60vh] max-w-[54vw] object-contain"
+=======
+                    sizes={isActive ? "32vw" : distance === 1 ? "18vw" : "12vw"}
+                    className="h-[60vh] w-auto object-contain"
+>>>>>>> a1d1572 (fix exhibition gallery jsx syntax)
                   />
                 </motion.button>
               );
