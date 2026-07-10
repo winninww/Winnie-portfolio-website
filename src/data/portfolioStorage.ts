@@ -233,3 +233,8 @@ export async function writePortfolioContent(
     result.data ?? result
   );
 }
+export async function resetPortfolioContent(): Promise<PortfolioContent> {
+  return writePortfolioContent(
+    normalizeContent(defaultPortfolioContent)
+  );
+}

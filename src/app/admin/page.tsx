@@ -338,7 +338,21 @@ export default function AdminPage() {
   const saveContent = async () => {
     try {
       const normalizedContent = normalizeContent(content);
-      const savedContent = await writePortfolioContent(normalizedContent);
+      const response = await fetch("/api/portfolio", {
+  method: "PUT",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(normalizedContent),
+});
+
+if (!response.ok) {
+  throw new Error("保存失败");
+}
+
+const result = await response.json();
+
+const savedContent = result.data;
       setContent(savedContent);
       setStatus("保存成功，已同步到线上数据库");
     } catch (error) {
