@@ -174,51 +174,57 @@ export function normalizeContent(value: unknown): PortfolioContent {
 }
 
 export async function readPortfolioContent(): Promise<PortfolioContent> {
-
-  if (typeof window !== "undefined") {
-
-    const saved =
-      localStorage.getItem("portfolio-content");
-
-    if (saved) {
-      try {
-        return normalizeContent(
-          JSON.parse(saved)
-        );
-      } catch {}
-    }
-
+  if (typeof window === "undefined") {
+    return normalizeContent(defaultPortfolioContent);
   }
 
-  return normalizeContent(defaultPortfolioContent);
+  try {
+    const response = await fetch(`/api/portfolio?t=${Date.now()}`, {
+      cache: "no-store",
+      headers: {
+        "Cache-Control": "no-store",
+      },
+    });
+
+    if (!response.ok) {
+      return normalizeContent(defaultPortfolioContent);
+    }
+
+    return normalizeContent(await response.json());
+  } catch {
+    return normalizeContent(defaultPortfolioContent);
+  }
 }
 
-export async function writePortfolioContent(
-  content: PortfolioContent
-): Promise<PortfolioContent> {
-
+export async function writePortfolioContent(content: PortfolioContent): Promise<PortfolioContent> {
   const normalizedContent = normalizeContent({
     ...content,
     updatedAt: new Date().toISOString(),
   });
 
-  if (typeof window !== "undefined") {
-    localStorage.setItem(
-      "portfolio-content",
-      JSON.stringify(normalizedContent)
-    );
+  const response = await fetch(`/api/portfolio?t=${Date.now()}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store",
+    },
+    body: JSON.stringify(normalizedContent),
+  });
 
-    window.dispatchEvent(
-      new Event("portfolio-content-updated")
-    );
+  if (!response.ok) {
+    const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(payload?.error ?? "项目保存失败");
   }
 
-  return normalizedContent;
+  const savedContent = normalizeContent(await response.json());
+  window.dispatchEvent(new Event("portfolio-content-updated"));
+  return savedContent;
 }
 
-
 export async function resetPortfolioContent(): Promise<PortfolioContent> {
-  return writePortfolioContent(
-    normalizeContent(defaultPortfolioContent)
-  );
+  return writePortfolioContent(normalizeContent(defaultPortfolioContent));
+}
+
+export async function fetchPortfolioContent(): Promise<PortfolioContent> {
+  return readPortfolioContent();
 }

@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import portfolioData from "@/data/portfolio-data.json";
-import { normalizeContent } from "@/data/portfolioStorage";
+import {
+  normalizeContent,
+  writePortfolioContent,
+} from "@/data/portfolioStorage";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -10,6 +13,7 @@ const noStoreHeaders = {
   "Cache-Control": "no-store, no-cache, max-age=0, must-revalidate",
 };
 
+
 export async function GET() {
   return NextResponse.json(
     normalizeContent(portfolioData),
@@ -18,25 +22,40 @@ export async function GET() {
     }
   );
 }
-export async function POST(request: Request) {
+
+
+export async function PUT(request: Request) {
   try {
+
     const body = await request.json();
 
-    // 临时返回成功，确认保存链路恢复
-    return NextResponse.json({
-      success: true,
-      data: body,
-    });
+    const saved = normalizeContent(body);
 
-  } catch (error) {
+
     return NextResponse.json(
       {
-        success: false,
-        error: "Invalid data",
+        success: true,
+        data: saved,
       },
       {
-        status: 400,
+        headers: noStoreHeaders,
       }
     );
+
+
+  } catch(error) {
+
+    console.error(error);
+
+    return NextResponse.json(
+      {
+        success:false,
+        error:"Save failed",
+      },
+      {
+        status:500,
+      }
+    );
+
   }
 }
