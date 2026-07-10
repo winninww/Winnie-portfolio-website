@@ -202,23 +202,34 @@ export async function writePortfolioContent(
     updatedAt: new Date().toISOString(),
   });
 
-  if (typeof window !== "undefined") {
-    localStorage.setItem(
-      "portfolio-content",
-      JSON.stringify(normalizedContent)
-    );
 
-    window.dispatchEvent(
-      new Event("portfolio-content-updated")
-    );
+  const response = await fetch(
+    `/api/portfolio?t=${Date.now()}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store",
+      },
+      body: JSON.stringify(normalizedContent),
+    }
+  );
+
+
+  if (!response.ok) {
+    throw new Error("作品保存失败");
   }
 
-  return normalizedContent;
-}
+
+  const result = await response.json();
 
 
-export async function resetPortfolioContent(): Promise<PortfolioContent> {
-  return writePortfolioContent(
-    normalizeContent(defaultPortfolioContent)
+  window.dispatchEvent(
+    new Event("portfolio-content-updated")
+  );
+
+
+  return normalizeContent(
+    result.data ?? result
   );
 }
