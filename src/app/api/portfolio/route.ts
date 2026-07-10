@@ -18,3 +18,25 @@ export async function GET() {
     }
   );
 }
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+
+    // 临时返回成功，确认保存链路恢复
+    return NextResponse.json({
+      success: true,
+      data: body,
+    });
+
+  } catch (error) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Invalid data",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+}
