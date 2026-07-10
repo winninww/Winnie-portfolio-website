@@ -1,35 +1,35 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Project } from "@/data/projects";
 import {
+  defaultPortfolioContent,
   readPortfolioContent,
   type PortfolioContent,
 } from "@/data/portfolioStorage";
 
-export function usePortfolioContent(): {
-  content: PortfolioContent;
-  projects: Project[];
-  profile: PortfolioContent["profile"];
-  setContent: React.Dispatch<React.SetStateAction<PortfolioContent>>;
-  loading: boolean;
-  refresh: () => Promise<void>;
-} {
-  const [content, setContent] = useState<PortfolioContent>(defaultPortfolioContent);
+export function usePortfolioContent() {
+  const [content, setContent] = useState<PortfolioContent | null>(
+    defaultPortfolioContent
+  );
+
   const [loading, setLoading] = useState(true);
 
-  const refresh = useCallback(async () => {
+  async function refresh() {
     try {
       setLoading(true);
+
       const latest = await readPortfolioContent();
+
       setContent(latest);
     } catch (error) {
       console.error("Portfolio load error:", error);
+
       setContent(defaultPortfolioContent);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }
 
   useEffect(() => {
     void refresh();
@@ -38,14 +38,23 @@ export function usePortfolioContent(): {
       void refresh();
     };
 
-    window.addEventListener("portfolio-content-updated", handleUpdate);
-    return () => window.removeEventListener("portfolio-content-updated", handleUpdate);
-  }, [refresh]);
+    window.addEventListener(
+      "portfolio-content-updated",
+      handleUpdate
+    );
+
+    return () => {
+      window.removeEventListener(
+        "portfolio-content-updated",
+        handleUpdate
+      );
+    };
+  }, []);
 
   return {
     content,
-    projects: content.projects,
-    profile: content.profile,
+    projects: content?.projects ?? [],
+    profile: content?.profile ?? defaultPortfolioContent.profile,
     setContent,
     loading,
     refresh,
