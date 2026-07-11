@@ -9,9 +9,7 @@ import {
 } from "@/data/portfolioStorage";
 
 export function usePortfolioContent() {
-  const [content, setContent] = useState<PortfolioContent | null>(
-    defaultPortfolioContent
-  );
+  const [content, setContent] = useState<PortfolioContent | null>(null);
 
   const [loading, setLoading] = useState(true);
 
