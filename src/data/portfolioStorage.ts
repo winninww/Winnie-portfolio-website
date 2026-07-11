@@ -174,23 +174,31 @@ export function normalizeContent(value: unknown): PortfolioContent {
 }
 
 export async function readPortfolioContent(): Promise<PortfolioContent> {
+  try {
+    const response = await fetch(
+      `/api/portfolio?t=${Date.now()}`,
+      {
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      }
+    );
 
-  if (typeof window !== "undefined") {
-
-    const saved =
-      localStorage.getItem("portfolio-content");
-
-    if (saved) {
-      try {
-        return normalizeContent(
-          JSON.parse(saved)
-        );
-      } catch {}
+    if (!response.ok) {
+      return normalizeContent(defaultPortfolioContent);
     }
 
-  }
+    const result = await response.json();
 
-  return normalizeContent(defaultPortfolioContent);
+    return normalizeContent(
+      result.data ?? result
+    );
+  } catch (error) {
+    console.error("Portfolio read failed:", error);
+
+    return normalizeContent(defaultPortfolioContent);
+  }
 }
 
 export async function writePortfolioContent(
