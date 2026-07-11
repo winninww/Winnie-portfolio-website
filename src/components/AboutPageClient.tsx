@@ -3,8 +3,15 @@
 import { PortfolioImage } from "@/components/PortfolioImage";
 import { usePortfolioContent } from "@/data/usePortfolioContent";
 
-export function AboutPageClient() {
-  const { profile } = usePortfolioContent();
+eexport default function AboutPageClient() {
+
+  const { profile, loading } = usePortfolioContent();
+
+  if (loading) {
+
+    return <main className="min-h-screen bg-paper" />;
+
+  }
 
   return (
     <main className="min-h-screen bg-paper px-5 pt-28 text-ink sm:px-8 lg:px-12">

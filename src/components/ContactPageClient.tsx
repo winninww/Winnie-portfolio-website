@@ -3,7 +3,11 @@
 import { usePortfolioContent } from "@/data/usePortfolioContent";
 
 export function ContactPageClient() {
-  const { profile } = usePortfolioContent();
+  const { profile, loading } = usePortfolioContent();
+
+  if (loading) {
+    return <main className="min-h-screen bg-paper" />;
+  }
 
   return (
     <main className="min-h-screen bg-paper px-5 pt-28 text-ink sm:px-8 lg:px-12">
