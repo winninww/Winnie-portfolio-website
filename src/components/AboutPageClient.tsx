@@ -3,14 +3,11 @@
 import { PortfolioImage } from "@/components/PortfolioImage";
 import { usePortfolioContent } from "@/data/usePortfolioContent";
 
-eexport default function AboutPageClient() {
-
+export function AboutPageClient() {
   const { profile, loading } = usePortfolioContent();
 
   if (loading) {
-
     return <main className="min-h-screen bg-paper" />;
-
   }
 
   return (
