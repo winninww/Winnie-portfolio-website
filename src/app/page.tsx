@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { HomePortfolio } from "@/components/HomePortfolio";
+import { LandingPage } from "@/components/LandingPage";
 
 export const metadata: Metadata = {
   title: "作品集",
@@ -12,6 +12,6 @@ export const metadata: Metadata = {
   }
 };
 
-export default function HomePage({ searchParams }: { searchParams?: { work?: string } }) {
-  return <HomePortfolio initialSlug={searchParams?.work} />;
+export default function HomePage() {
+  return <LandingPage />;
 }

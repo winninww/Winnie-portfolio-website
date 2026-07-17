@@ -5,17 +5,51 @@ import {
   type Project,
   type CaseSection,
 } from "@/data/projects";
+import portfolioData from "@/data/portfolio-data.json";
 
-export type PortfolioContent = {
-  projects: Project[];
-  profile: Profile;
-  updatedAt?: string;
+export type PortfolioCategory = {
+
+  id: string;
+
+  name: string;
+
 };
 
+export type PortfolioContent = {
+
+  projects: Project[];
+
+  profile: Profile;
+
+  categories: PortfolioCategory[];
+
+  updatedAt: string;
+
+}
+
 export const defaultPortfolioContent: PortfolioContent = {
-  projects: defaultProjects,
-  profile: defaultProfile,
-  updatedAt: new Date(0).toISOString(),
+
+  projects: portfolioData.projects,
+
+  profile: portfolioData.profile,
+
+  categories: [
+    {
+      id: "detail",
+      name: "详情页"
+    },
+    {
+      id: "brand",
+      name: "品牌设计"
+    },
+    {
+      id: "poster",
+      name: "海报设计"
+    }
+  ],
+
+  updatedAt: new Date().toISOString(),
+
 };
 
 const unsafeSlugPattern = /[^a-z0-9-]/;
@@ -162,15 +196,23 @@ export function normalizeProfile(value: unknown): Profile {
 
 export function normalizeContent(value: unknown): PortfolioContent {
   const content = isRecord(value) ? value : {};
+  const categories = Array.isArray(content.categories)
+  ? content.categories
+  : [];
   const usedSlugs = new Set<string>();
   const rawProjects = Array.isArray(content.projects) && content.projects.length ? content.projects : defaultProjects;
   const projects = rawProjects.map((project, index) => normalizeProject(project, index, usedSlugs));
 
   return {
-    projects: sortProjects(projects),
-    profile: normalizeProfile(content.profile),
-    updatedAt: stringWithFallback(content.updatedAt, new Date().toISOString()),
-  };
+  projects: sortProjects(projects),
+  profile: normalizeProfile(content.profile),
+  categories,
+  updatedAt: stringWithFallback(
+    content.updatedAt,
+    new Date().toISOString()
+  ),
+};
+
 }
 
 export async function readPortfolioContent(): Promise<PortfolioContent> {
@@ -186,19 +228,34 @@ export async function readPortfolioContent(): Promise<PortfolioContent> {
     );
 
     if (!response.ok) {
-      return normalizeContent(defaultPortfolioContent);
+  if (typeof window !== "undefined") {
+    const local = localStorage.getItem("portfolio-content");
+
+    if (local) {
+      return normalizeContent(JSON.parse(local));
     }
+  }
+
+  return normalizeContent(defaultPortfolioContent);
+}
 
     const result = await response.json();
 
     return normalizeContent(
       result.data ?? result
     );
-  } catch (error) {
-    console.error("Portfolio read failed:", error);
+  } catch(error) {
 
-    return normalizeContent(defaultPortfolioContent);
+  if (typeof window !== "undefined") {
+    const local = localStorage.getItem("portfolio-content");
+
+    if (local) {
+      return normalizeContent(JSON.parse(local));
+    }
   }
+
+  return normalizeContent(defaultPortfolioContent);
+}
 }
 
 export async function writePortfolioContent(

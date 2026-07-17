@@ -13,7 +13,11 @@ import {
   type PortfolioContent
 } from "@/data/portfolioStorage";
 
-type AdminView = "projects" | "profile" | "contact";
+type AdminView =
+  | "projects"
+  | "categories"
+  | "profile"
+  | "contact";
 
 type PortfolioExportFile = {
   version: 1;
@@ -24,9 +28,6 @@ type PortfolioExportFile = {
 
 const sectionMeta: Array<Pick<CaseSection, "eyebrow" | "title">> = [
   { eyebrow: "Overview", title: "项目概述" },
-  { eyebrow: "Challenge", title: "项目背景" },
-  { eyebrow: "Solution", title: "解决方案" },
-  { eyebrow: "Outcome", title: "设计成果" }
 ];
 
 function createProject(index: number): Project {
@@ -151,16 +152,23 @@ function restoreImportedContent(exportFile: PortfolioExportFile | PortfolioConte
   const images = "images" in exportFile ? exportFile.images : {};
 
   return {
-    projects: content.projects.map((project) => ({
-        ...project,
-        cover: restoreImageRef(project.cover, images),
-        detailImages: (project.detailImages ?? []).map((src) => restoreImageRef(src, images))
-      })),
-    profile: {
-      ...content.profile,
-      portrait: restoreImageRef(content.profile.portrait, images)
-    }
-  };
+  categories: content.categories ?? [],
+
+  projects: content.projects.map((project) => ({
+    ...project,
+    cover: restoreImageRef(project.cover, images),
+    detailImages: (project.detailImages ?? []).map((src) =>
+      restoreImageRef(src, images)
+    ),
+  })),
+
+  profile: {
+    ...content.profile,
+    portrait: restoreImageRef(content.profile.portrait, images),
+  },
+
+  updatedAt: content.updatedAt ?? new Date().toISOString(),
+};
 }
 
 export default function AdminPage() {
@@ -425,6 +433,29 @@ const savedContent = result.data;
           </div>
           <div className="flex items-center gap-4">
             <p className="text-[13px] text-graphite">{status}</p>
+            <button
+              type="button"
+              onClick={() => setActiveView("projects")}
+              className="border border-line px-5 py-3 text-[13px]"
+            >
+              作品管理
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveView("categories")}
+              className="border border-line px-5 py-3 text-[13px]"
+            >
+              分类管理
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveView("profile")}
+              className="border border-line px-5 py-3 text-[13px]"
+            >
+              个人信息
+            </button>
             <button type="button" onClick={exportData} className="border border-line px-5 py-3 text-[13px] text-ink hover:border-ink">
               导出作品数据 JSON
             </button>
@@ -497,6 +528,89 @@ const savedContent = result.data;
             </div>
           </section>
 
+<section
+  className={
+    activeView === "categories"
+      ? "block"
+      : "hidden"
+  }
+>
+  <h2 className="text-[20px] font-semibold">
+    分类管理
+  </h2>
+
+  <button
+    type="button"
+    className="mt-6 border border-line px-5 py-3 text-[13px]"
+    onClick={() => {
+      setContent((current) => ({
+        ...current,
+        categories: [
+          ...current.categories,
+          {
+            id: `category-${Date.now()}`,
+            name: "新分类",
+          },
+        ],
+      }));
+    }}
+  >
+    新增分类
+  </button>
+
+
+  <div className="mt-6">
+
+    {content.categories.map((category) => (
+
+      <div
+        key={category.id}
+        className="flex items-center gap-4 border-b py-4"
+      >
+
+        <input
+          value={category.name}
+          onChange={(event) => {
+            const value = event.target.value;
+
+            setContent((current) => ({
+              ...current,
+              categories: current.categories.map((item) =>
+                item.id === category.id
+                  ? {
+                      ...item,
+                      name: value,
+                    }
+                  : item
+              ),
+            }));
+          }}
+          className="border px-3 py-2"
+        />
+
+
+        <button
+          type="button"
+          className="border border-line px-4 py-2 text-[13px]"
+          onClick={() => {
+            setContent((current) => ({
+              ...current,
+              categories: current.categories.filter(
+                (item) => item.id !== category.id
+              ),
+            }));
+          }}
+        >
+          删除
+        </button>
+
+      </div>
+
+    ))}
+
+  </div>
+
+</section>
           <section className="min-w-0">
             {activeView === "projects" && selectedProject ? (
               <div>
@@ -513,64 +627,87 @@ const savedContent = result.data;
                 </div>
 
                 <div className="grid gap-5 sm:grid-cols-2">
-                  <Field label="项目名称" value={selectedProject.title} onChange={(value) => updateProject((project) => ({ ...project, title: value }))} />
-                  <Field label="项目分类" value={selectedProject.category} onChange={(value) => updateProject((project) => ({ ...project, category: value }))} />
+                <div>
+  <label className="block text-[13px] text-graphite mb-2">
+    项目分类
+  </label>
+
+  <select
+    value={selectedProject.category}
+    onChange={(event) => {
+      updateProject((project) => ({
+        ...project,
+        category: event.target.value,
+      }));
+    }}
+    className="w-full border border-line px-3 py-2 text-[14px]"
+  >
+
+    {content.categories.map((category) => (
+      <option
+        key={category.id}
+        value={category.name}
+      >
+        {category.name}
+      </option>
+    ))}
+
+  </select>
+</div>
                 </div>
                 <p className="mt-4 text-[12px] leading-6 text-graphite">Slug：{selectedProject.slug}</p>
+<div className="mt-6">
+  <label className="block text-[13px] text-graphite mb-2">
+    项目名称
+  </label>
 
-                <Textarea
-                  label="项目简介"
-                  value={selectedProject.description ?? ""}
-                  onChange={(value) => updateProject((project) => ({ ...project, description: value }))}
-                />
+  <input
+    value={selectedProject.title}
+    onChange={(event) => {
+      const value = event.target.value;
 
+      updateProject((project) => ({
+        ...project,
+        title: value,
+      }));
+    }}
+    className="w-full border border-line px-3 py-2 text-[14px]"
+  />
+</div>
+
+
+<div className="mt-6">
+  <label className="block text-[13px] text-graphite mb-2">
+    项目概述 Overview
+  </label>
+
+  <textarea
+    value={selectedProject.description ?? ""}
+    onChange={(event) => {
+      const value = event.target.value;
+
+      updateProject((project) => ({
+        ...project,
+        description: value,
+      }));
+    }}
+    className="w-full min-h-[140px] resize-y border border-line px-3 py-3 text-[14px] leading-7"
+  />
+</div>
                 <ImageUpload
                   title="封面图"
                   description="用于首页作品展示，不会作为作品详情页首图。"
                   inputId="cover-upload"
                   multiple={false}
+                  preview={selectedProject.cover}
                   onFiles={uploadCover}
                 />
-                <div className="mt-4">
-                  <ImagePreview src={selectedProject.cover} alt={`${selectedProject.title} 封面`} />
-                </div>
+                
 
-                <ImageUpload
-                  title="详情图"
-                  description="用于作品详情页展示，会按顺序从第一张开始完整呈现。"
-                  inputId="detail-upload"
-                  multiple
-                  onFiles={uploadDetailImages}
-                />
-                <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                  {(selectedProject.detailImages ?? []).map((src, index) => (
-                    <div key={`${src.slice(0, 32)}-${index}`}>
-                      <ImagePreview src={src} alt={`${selectedProject.title} 详情图 ${index + 1}`} />
-                      <div className="mt-2 flex gap-2">
-                        <button type="button" onClick={() => moveDetailImage(index, -1)} className="border border-line px-3 py-2 text-[12px] text-graphite hover:border-ink hover:text-ink">
-                          前移
-                        </button>
-                        <button type="button" onClick={() => moveDetailImage(index, 1)} className="border border-line px-3 py-2 text-[12px] text-graphite hover:border-ink hover:text-ink">
-                          后移
-                        </button>
-                        <button type="button" onClick={() => removeDetailImage(index)} className="border border-line px-3 py-2 text-[12px] text-graphite hover:border-ink hover:text-ink">
-                          删除
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                
+              
 
-                <div className="mt-8 grid gap-5">
-                  {ensureSections(selectedProject).map((section) => (
-                    <Textarea
-                      key={section.eyebrow}
-                      label={`${section.title} ${section.eyebrow}`}
-                      value={section.body}
-                      onChange={(value) => updateSection(section.eyebrow, value)}
-                    />
-                  ))}
-                </div>
+                
               </div>
             ) : null}
 
@@ -649,29 +786,61 @@ function ImageUpload({
   description,
   inputId,
   multiple,
-  onFiles
+  onFiles,
+  preview,
 }: {
   title: string;
   description: string;
   inputId: string;
   multiple: boolean;
   onFiles: (files: FileList | null) => void;
+  preview?: string;
 }) {
   return (
     <label
-      htmlFor={inputId}
-      onDragOver={(event) => event.preventDefault()}
-      onDrop={(event) => {
-        event.preventDefault();
-        onFiles(event.dataTransfer.files);
-      }}
-      className="mt-8 block border border-dashed border-line bg-white px-5 py-6 text-center transition hover:border-ink"
-    >
-      <span className="block text-[15px] font-semibold text-ink">{title}</span>
-      <span className="mt-2 block text-[13px] leading-6 text-graphite">{description}</span>
-      <span className="mt-4 inline-block border border-line px-4 py-2 text-[12px] text-ink">点击上传</span>
-      <input id={inputId} type="file" accept="image/*" multiple={multiple} className="sr-only" onChange={(event) => onFiles(event.target.files)} />
-    </label>
+  htmlFor={inputId}
+  onDragOver={(event) => event.preventDefault()}
+  onDrop={(event) => {
+    event.preventDefault();
+    onFiles(event.dataTransfer.files);
+  }}
+  className="mt-8 block border border-dashed border-line bg-white px-5 py-6 text-center cursor-pointer"
+>
+  {preview ? (
+    <div className="flex min-h-[260px] items-center justify-center">
+      <PortfolioImage
+        src={preview}
+        alt={title}
+        width={900}
+        height={600}
+        className="max-h-[260px] w-auto object-contain"
+      />
+    </div>
+  ) : (
+    <>
+      <span className="block text-[15px] font-semibold text-ink">
+        {title}
+      </span>
+
+      <span className="mt-2 block text-[13px] leading-6 text-graphite">
+        {description}
+      </span>
+
+      <span className="mt-4 inline-block border border-line px-4 py-2 text-[12px] text-ink">
+        点击上传
+      </span>
+    </>
+  )}
+
+  <input
+    id={inputId}
+    type="file"
+    accept="image/*"
+    multiple={multiple}
+    onChange={(event) => onFiles(event.target.files)}
+    className="sr-only"
+  />
+</label>
   );
 }
 

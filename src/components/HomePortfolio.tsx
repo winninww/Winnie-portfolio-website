@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import { ExhibitionGallery } from "@/components/ExhibitionGallery";
 import { usePortfolioContent } from "@/data/usePortfolioContent";
@@ -8,7 +8,7 @@ type HomePortfolioProps = {
 };
 
 export function HomePortfolio({ initialSlug }: HomePortfolioProps) {
-  const { projects, loading } = usePortfolioContent();
+  const { projects, categories, loading } = usePortfolioContent();
 
   if (loading) {
     return <main className="min-h-screen bg-paper" />;
@@ -17,6 +17,7 @@ export function HomePortfolio({ initialSlug }: HomePortfolioProps) {
   return (
     <ExhibitionGallery
       projects={projects}
+      categories={categories}
       initialSlug={initialSlug}
     />
   );

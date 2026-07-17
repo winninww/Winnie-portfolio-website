@@ -52,6 +52,7 @@ export function usePortfolioContent() {
   return {
     content,
     projects: content?.projects ?? [],
+    categories: content?.categories ?? [],
     profile: content?.profile ?? defaultPortfolioContent.profile,
     setContent,
     loading,

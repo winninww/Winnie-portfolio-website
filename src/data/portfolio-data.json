@@ -1,9 +1,54 @@
 {
+  "categories": [
+
+    {
+
+      "id": "detail",
+
+      "name": "详情页"
+
+    },
+
+    {
+
+      "id": "brand",
+
+      "name": "品牌设计"
+
+    },
+
+    {
+
+      "id": "poster",
+
+      "name": "海报设计"
+
+    },
+
+    {
+
+      "id": "season",
+
+      "name": "节气海报"
+
+    },
+
+    {
+
+      "id": "packaging",
+
+      "name": "包装设计"
+
+    }
+
+  ],
+
   "projects": [
     {
       "slug": "project-2",
       "title": "奥兰小红帽亲亲干红葡萄酒",
       "category": "电商详情页",
+      "categoryId": "detail",
       "description": "",
       "cover": "/uploads/portfolio-77e9184eb121522c.png",
       "detailImages": [
@@ -38,6 +83,7 @@
       "slug": "project-1782810187724",
       "title": "酒类海报",
       "category": "海报设计",
+      "categoryId": "poster",
       "description": "项目简介",
       "cover": "/uploads/portfolio-0f0cdcc5fc868412-optimized.webp",
       "detailImages": [

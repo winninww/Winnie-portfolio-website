@@ -25,11 +25,11 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-5 sm:px-8 lg:px-12">
         <Link
           href="/"
-          className="-ml-1 inline-flex min-h-11 items-center px-1 text-[18px] font-semibold leading-none text-ink outline-none focus-visible:ring-2 focus-visible:ring-[#111111] focus-visible:ring-offset-4 focus-visible:ring-offset-[#fafafa]"
+          className="ml-[-40px] inline-flex min-h-11 items-center px-1 text-[18px] font-semibold leading-none text-ink outline-none focus-visible:ring-2 focus-visible:ring-[#111111] focus-visible:ring-offset-4 focus-visible:ring-offset-[#fafafa]"
         >
           HE WEN
         </Link>
-        <nav aria-label="主导航" className="flex items-center gap-1 text-[12px] font-medium uppercase leading-none tracking-[0.08em] text-ink sm:gap-3">
+        <nav aria-label="主导航" className="mr-[-40px] flex items-center gap-1 text-[12px] font-medium uppercase leading-none tracking-[0.08em] text-ink sm:gap-3">
           {links.map((link) => {
             const current = isCurrent(link.href);
 
