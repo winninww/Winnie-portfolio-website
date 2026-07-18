@@ -167,7 +167,7 @@ duration-300
             overflow-hidden
             rounded-[15px]
             "
-            
+            onClick={() => router.push(`/case-study/${project.slug}`)}
           >
 
             <PortfolioImage
