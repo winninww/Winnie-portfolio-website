@@ -2,15 +2,12 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
 
-  console.log(
-    "密码:",
-    process.env.ADMIN_PASSWORD
-  );
+  
 
   const { password } = await request.json();
 
 
-  if(password !== process.env.ADMIN_PASSWORD){
+  if(password?.trim() !== process.env.ADMIN_PASSWORD?.trim()){
 
     return NextResponse.json(
       {
