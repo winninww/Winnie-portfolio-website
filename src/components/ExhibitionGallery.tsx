@@ -63,7 +63,7 @@ return (
 
     <aside
   className="
-  w-[240px]
+  w-[200px]
   shrink-0
   sticky
   top-16
@@ -146,61 +146,36 @@ duration-300
     >
 
     <div
-      className="
-      columns-1
-      md:columns-2
-      xl:columns-3
-      2xl:columns-4
-      gap-10
-      "
-    >
-
-        {filteredProjects.map((project) => (
-
-          <article
-            key={project.slug}
-            className="
-            mb-10
-            break-inside-avoid
-            cursor-pointer
-            group
-            overflow-hidden
-            rounded-[15px]
-            "
-            onClick={() => router.push(`/case-study/${project.slug}`)}
-          >
-
-            <PortfolioImage
-              src={project.cover}
-
-  alt={project.title}
-
-  width={1200}
-
-  height={1200}
-
   className="
-w-full
-max-h-[700px]
-overflow-hidden
-rounded-[15px]
-bg-[#f5f5f3]
-object-cover
-transition
-duration-500
-hover:scale-[1.015]
-"
-            />
-
-
-            
-
-          </article>
-
-        ))}
-
-
-      </div>
+  columns-1
+  md:columns-2
+  lg:columns-3
+  xl:columns-4
+  gap-8
+  "
+>
+  {filteredProjects.map((project) => (
+    <article
+      key={project.slug}
+      className="
+      mb-10
+      break-inside-avoid
+      cursor-pointer
+      group
+      overflow-hidden
+      rounded-[10px]
+      "
+      onClick={() => router.push(`/case-study/${project.slug}`)}
+    >
+      <PortfolioImage
+        src={project.cover}
+        alt={project.title}
+        width={1200}
+        height={1200}
+      />
+    </article>
+  ))}
+</div>
 
 
     </section>

@@ -243,17 +243,47 @@ export default function AdminPage() {
   };
 
   const addProject = () => {
-    updateContent((current) => {
-      const project = createProject(current.projects.length + 1);
-      setSelectedIndex(current.projects.length);
-      return {
-        ...current,
-        projects: [...current.projects, project]
-      };
-    });
-    setActiveView("projects");
-  };
+  updateContent((current) => {
+    const project = createProject(current.projects.length + 1);
 
+    // 新作品放到第一位
+    setSelectedIndex(0);
+
+    return {
+      ...current,
+      projects: [project, ...current.projects]
+    };
+  });
+
+  setActiveView("projects");
+};
+const shuffleProjects = () => {
+
+  updateContent((current) => {
+
+    const projects = [...current.projects];
+
+    for (let i = projects.length - 1; i > 0; i--) {
+
+      const j = Math.floor(Math.random() * (i + 1));
+
+      [projects[i], projects[j]] = [projects[j], projects[i]];
+
+    }
+
+    return {
+
+      ...current,
+
+      projects
+
+    };
+
+  });
+
+  setStatus("作品顺序已打乱，请点击保存");
+
+};
   const deleteProject = () => {
     if (!selectedProject || content.projects.length <= 1) {
       setStatus("至少保留一个作品");
@@ -469,9 +499,23 @@ const savedContent = result.data;
               className="sr-only"
               onChange={(event) => void importData(event.target.files?.[0] ?? null)}
             />
-            <button type="button" onClick={saveContent} className="border border-ink px-5 py-3 text-[13px] text-ink hover:bg-ink hover:text-white">
-              保存
-            </button>
+            <div className="flex gap-3">
+
+  <button
+    type="button"
+    onClick={shuffleProjects}
+  >
+    打乱作品顺序
+  </button>
+
+  <button
+    type="button"
+    onClick={saveContent}
+  >
+    保存修改
+  </button>
+
+</div>
           </div>
         </header>
 

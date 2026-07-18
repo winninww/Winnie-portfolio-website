@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const links = [
-  { href: "/", label: "作品集" },
+  { href: "/portfolio", label: "作品集" },
   { href: "/about", label: "关于我" },
   { href: "/contact", label: "联系我" }
 ];
@@ -13,12 +13,12 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   const isCurrent = (href: string) => {
-    if (href === "/") {
-      return pathname === "/" || pathname.startsWith("/case-study/");
-    }
+  if (href === "/portfolio") {
+    return pathname === "/portfolio" || pathname.startsWith("/case-study/");
+  }
 
-    return pathname === href || pathname.startsWith(`${href}/`);
-  };
+  return pathname === href || pathname.startsWith(`${href}/`);
+};
 
   return (
     <header className="fixed left-0 top-0 z-40 w-full border-b border-line bg-paper/95">
