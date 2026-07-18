@@ -5,6 +5,8 @@ export async function POST(request: Request) {
   
 
   const { password } = await request.json();
+  console.log("输入:", password);
+console.log("环境:", process.env.ADMIN_PASSWORD);
 
 
   if(password?.trim() !== process.env.ADMIN_PASSWORD?.trim()){
