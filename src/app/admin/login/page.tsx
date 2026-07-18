@@ -7,26 +7,33 @@ export default function AdminLoginPage() {
 
   const router = useRouter();
 
-  const [password,setPassword] = useState("");
-  const [error,setError] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  async function login(){
+  async function login() {
 
-    const res = await fetch("/api/admin/login",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
+    const res = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-      body:JSON.stringify({
+      body: JSON.stringify({
         password,
       }),
     });
 
 
-    if(res.ok){
+    if (res.ok) {
+
+      // 保存登录状态
+      sessionStorage.setItem("admin_login", "true");
+
       router.push("/admin");
-    }else{
+
+    } else {
+
       setError("密码错误");
+
     }
 
   }
@@ -45,9 +52,14 @@ export default function AdminLoginPage() {
         <input
           type="password"
           value={password}
-          onChange={(e)=>setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
           placeholder="请输入密码"
           className="w-full border px-4 py-3"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              login();
+            }
+          }}
         />
 
 

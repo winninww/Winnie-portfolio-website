@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PortfolioImage } from "@/components/PortfolioImage";
+import { useRouter } from "next/navigation";
 import type { CaseSection, Profile, Project } from "@/data/projects";
 import {
   defaultPortfolioContent,
@@ -172,6 +173,15 @@ function restoreImportedContent(exportFile: PortfolioExportFile | PortfolioConte
 }
 
 export default function AdminPage() {
+  const router = useRouter();
+
+useEffect(() => {
+  const isLogin = sessionStorage.getItem("admin_login");
+
+  if (!isLogin) {
+    router.push("/admin/login");
+  }
+}, [router]);
   const [content, setContent] = useState<PortfolioContent>(defaultPortfolioContent);
   const [activeView, setActiveView] = useState<AdminView>("projects");
   const [selectedIndex, setSelectedIndex] = useState(0);
