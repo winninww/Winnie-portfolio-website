@@ -146,33 +146,34 @@ duration-300
     >
 
     <div
-  className="
-  columns-1
-  md:columns-2
-  lg:columns-3
-  xl:columns-4
-  gap-8
-  "
+className="
+grid
+grid-cols-1
+md:grid-cols-2
+lg:grid-cols-3
+xl:grid-cols-4
+gap-8
+items-start
+"
 >
   {filteredProjects.map((project) => (
     <article
-      key={project.slug}
-      className="
-      mb-10
-      break-inside-avoid
-      cursor-pointer
-      group
-      overflow-hidden
-      rounded-[10px]
-      "
+key={project.slug}
+className="
+cursor-pointer
+group
+overflow-hidden
+rounded-[10px]
+"
       onClick={() => router.push(`/case-study/${project.slug}`)}
     >
       <PortfolioImage
-        src={project.cover}
-        alt={project.title}
-        width={1200}
-        height={1200}
-      />
+src={project.cover}
+alt={project.title}
+width={1200}
+height={1600}
+className="w-full h-auto"
+/>
     </article>
   ))}
 </div>
