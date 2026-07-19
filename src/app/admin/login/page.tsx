@@ -11,33 +11,38 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("");
 
   async function login() {
-    console.log("login clicked");
 
-    const res = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        password,
-      }),
-    });
+  console.log("login clicked");
+
+  const res = await fetch("/api/admin/login", {
+    method: "POST",
+    headers:{
+      "Content-Type":"application/json",
+    },
+    body:JSON.stringify({
+      password,
+    }),
+  });
+
+  console.log("response", res.status);
 
 
-    if (res.ok) {
+  if(res.ok){
 
-      // 保存登录状态
-      sessionStorage.setItem("admin_login", "true");
+    sessionStorage.setItem(
+      "admin_login",
+      "true"
+    );
 
-      router.push("/admin");
+    router.push("/admin");
 
-    } else {
+  }else{
 
-      setError("密码错误");
-
-    }
+    setError("密码错误");
 
   }
+
+}
 
 
   return (

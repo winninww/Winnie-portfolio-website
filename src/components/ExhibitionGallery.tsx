@@ -167,14 +167,79 @@ duration-300
       "
       onClick={() => router.push(`/case-study/${project.slug}`)}
     >
-      <div className="relative w-full">
+      <div className="relative w-full overflow-hidden">
+
   <PortfolioImage
     src={project.cover}
     alt={project.title}
     width={1200}
     height={1600}
-    className="w-full h-auto"
+    className="
+      w-full
+      h-auto
+      transition-transform
+      duration-500
+      ease-out
+      group-hover:scale-[1.03]
+    "
   />
+
+  {/* Hover浮层 */}
+  <div
+    className="
+      absolute
+      inset-0
+      bg-black/40
+      opacity-0
+      transition-opacity
+      duration-300
+      group-hover:opacity-100
+      flex
+      flex-col
+      items-center
+      justify-center
+      text-white
+    "
+  >
+
+    <h3
+      className="
+        text-lg
+        tracking-[0.08em]
+        mb-2
+        text-center
+      "
+    >
+      {project.title}
+    </h3>
+
+
+    <p
+      className="
+        text-sm
+        opacity-80
+        mb-5
+      "
+    >
+      {project.category}
+    </p>
+
+
+    <span
+      className="
+        border
+        border-white/60
+        px-5
+        py-2
+        text-xs
+        tracking-[0.15em]
+      "
+    >
+      VIEW PROJECT
+    </span>
+
+  </div>
+
 </div>
     </article>
   ))}
