@@ -11,6 +11,7 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("");
 
   async function login() {
+    console.log("login clicked");
 
     const res = await fetch("/api/admin/login", {
       method: "POST",
