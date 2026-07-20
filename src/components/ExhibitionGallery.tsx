@@ -175,11 +175,21 @@ duration-300
     width={1200}
     height={1600}
     className="
+
       w-full
+
       h-auto
+
+      max-h-[700px]
+
+      object-cover
+
       transition-transform
+
       duration-500
+
       ease-out
+
       group-hover:scale-[1.03]
     "
   />

@@ -18,6 +18,7 @@ export function CaseStudyClient({ slug }: CaseStudyClientProps) {
   const project = projects.find((item) => item.slug === requestedSlug);
   const legacyTitleProject = project ? undefined : projects.find((item) => item.title === requestedSlug);
   const visibleProject = project ?? legacyTitleProject;
+  console.log("DETAIL PROJECT", visibleProject);
 
   useEffect(() => {
   if (projects.length > 0) {
